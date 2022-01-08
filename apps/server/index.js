@@ -22,6 +22,23 @@ fastify.get('/', async (request, reply) => {
 	}
 });
 
+fastify.route({
+	method: 'POST',
+	url: '/api/create',
+	schema: {
+		body: {
+			type: 'object',
+			required: ['originalUrl'],
+			properties: {
+				originalUrl: { type: 'string' },
+			},
+		},
+	},
+	handler: async (request, reply) => {
+		return request.body;
+	},
+});
+
 // Run the server!
 const start = async () => {
 	try {
