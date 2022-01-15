@@ -4,11 +4,20 @@ const apiRoutes = async fastify => {
 		method: 'POST',
 		url: '/create',
 		schema: {
+			description: 'Create a new short URL',
 			body: {
 				type: 'object',
 				required: ['originalUrl'],
 				properties: {
 					originalUrl: { type: 'string' },
+				},
+			},
+			response: {
+				200: {
+					type: 'object',
+					properties: {
+						shortCode: { type: 'string' },
+					},
 				},
 			},
 		},

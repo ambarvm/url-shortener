@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import fastifyMongodb from 'fastify-mongodb';
+import fastifySwagger from 'fastify-swagger';
 import dotenv from 'dotenv';
 
 import { getDb } from './db.js';
@@ -24,9 +25,25 @@ fastify.register(fastifyMongodb, {
 	url: process.env.MONGO_URL,
 });
 
+fastify.register(fastifySwagger, {
+	routePrefix: '/docs',
+	exposeRoute: true,
+	swagger: {
+		info: {
+			title: 'URL Shortener',
+		},
+		host: 'localhost:3000',
+	},
+});
+
 fastify.register(async instance => {
 	fastify.decorate('db', getDb(instance.mongo.db));
 	fastify.register(routes);
+});
+
+fastify.ready(err => {
+	if (err) throw err;
+	fastify.swagger();
 });
 
 // Run the server!
