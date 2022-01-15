@@ -1,5 +1,4 @@
 import apiRoutes from './api/routes.js';
-import { getOriginalUrl } from './urls.js';
 
 /** @type {import('fastify').FastifyPluginCallback} */
 export const routes = async fastify => {
@@ -8,7 +7,7 @@ export const routes = async fastify => {
 	fastify.get('/:shortCode', async (request, reply) => {
 		try {
 			const { shortCode } = request.params;
-			const originalUrl = await getOriginalUrl(fastify.mongo.db, shortCode);
+			const originalUrl = await fastify.db.getOriginalUrl(shortCode);
 			if (!originalUrl) {
 				reply.callNotFound();
 				return;

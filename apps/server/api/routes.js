@@ -1,5 +1,3 @@
-import { createShortUrl } from '../urls.js';
-
 /** @type {import('fastify').FastifyPluginCallback} */
 const apiRoutes = async fastify => {
 	fastify.route({
@@ -16,7 +14,7 @@ const apiRoutes = async fastify => {
 		},
 		handler: async request => {
 			let { originalUrl } = request.body;
-			let shortUrl = await createShortUrl(fastify.mongo.db, originalUrl);
+			let shortUrl = await fastify.db.createShortUrl(originalUrl);
 			return { shortUrl: `${request.hostname}/${shortUrl}` };
 		},
 	});
