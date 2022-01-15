@@ -14,7 +14,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"fastify": "^3.25.3",
-		"fastify-dynamo": "workspace:^"
+		"fastify-mongodb": "^4.1.1"
 	},
 	"devDependencies": {
 		"nodemon": "^2.0.15"

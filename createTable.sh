@@ -1,1 +1,0 @@
-aws dynamodb create-table --table-name urls --attribute-definitions AttributeName=shortenedUrl,AttributeType=S --key-schema AttributeName=shortenedUrl,KeyType=HASH  --provisioned-throughput ReadCapacityUnits=10000,WriteCapacityUnits=10000 --endpoint-url=http://localhost:8000
