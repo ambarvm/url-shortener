@@ -16,7 +16,8 @@
 		"bcrypt": "^5.0.1",
 		"dotenv": "^12.0.3",
 		"fastify": "^3.25.3",
-		"fastify-mongodb": "^4.1.1"
+		"fastify-mongodb": "^4.1.1",
+		"fastify-swagger": "^4.13.1"
 	},
 	"devDependencies": {
 		"nodemon": "^2.0.15",
