@@ -16,7 +16,7 @@ const apiRoutes = async fastify => {
 				200: {
 					type: 'object',
 					properties: {
-						shortCode: { type: 'string' },
+						shortUrl: { type: 'string' },
 					},
 				},
 			},
