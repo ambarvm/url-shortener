@@ -3,6 +3,8 @@ import fastifyMongodb from 'fastify-mongodb';
 import fastifySwagger from 'fastify-swagger';
 import dotenv from 'dotenv';
 
+import connect from './mongoClient.js';
+import { addSchemas } from './schema.js';
 import { getDb } from './db.js';
 import { routes } from './routes.js';
 import { getIncrFunction, RateLimiterStore } from './rateLimiterStore.js';
@@ -24,7 +26,7 @@ const fastify = Fastify({
 
 fastify.register(fastifyMongodb, {
 	forceClose: true,
-	url: process.env.MONGO_URL,
+	client: await connect(),
 });
 
 fastify.register(fastifySwagger, {
@@ -38,8 +40,10 @@ fastify.register(fastifySwagger, {
 	},
 });
 
+addSchemas(fastify);
+
 fastify.register(async instance => {
-	fastify.decorate('db', getDb(instance.mongo.db));
+	fastify.decorate('db', getDb(instance.mongo.client.db()));
 	getIncrFunction(fastify);
 
 	fastify.register(fastifyRateLimit, {

@@ -1,3 +1,6 @@
 node_modules/
 aws/
 *.log
+
+*.log
+database

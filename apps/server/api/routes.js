@@ -22,14 +22,15 @@ const apiRoutes = async fastify => {
 				type: 'object',
 				required: ['originalUrl'],
 				properties: {
-					originalUrl: { type: 'string' },
+					originalUrl: { $ref: 'uri' },
+					expireAt: { type: 'string', format: 'date-time' },
 				},
 			},
 			response: {
 				200: {
 					type: 'object',
 					properties: {
-						shortUrl: { type: 'string' },
+						shortUrl: { $ref: 'shortUrl' },
 					},
 				},
 			},
@@ -41,11 +42,11 @@ const apiRoutes = async fastify => {
 			},
 		},
 		handler: async (request, reply) => {
-			let { originalUrl } = request.body;
+			let { originalUrl ,expireAt } = request.body;
 			let api_key = request.headers['authorization'];
 
 			if (await fastify.db.verifyApiKey(api_key)) {
-				let shortUrl = await fastify.db.createShortUrl(originalUrl, api_key);
+				let shortUrl = await fastify.db.createShortUrl(originalUrl, api_key,expireAt);
 				return { shortUrl: `${request.hostname}/${shortUrl}` };
 			} else {
 				reply.status(401);

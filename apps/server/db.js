@@ -18,7 +18,8 @@ export const getDb = db => {
 			}
 		},
 
-		async createShortUrl(originalUrl, api_key) {
+		/** @param {{originalUrl:string, expireAt?:string}} */
+		async createShortUrl(originalUrl, api_key,expireAt) {
 			console.log(originalUrl + api_key + process.env.SECRET_KEY);
 			const shortCode = createHash('md5')
 				.update(originalUrl + api_key + process.env.SECRET_KEY)
@@ -33,6 +34,7 @@ export const getDb = db => {
 						originalUrl,
 						shortCode,
 						createdBy: api_key,
+						expireAt: expireAt ? new Date(expireAt) : null,
 					},
 				},
 				{ upsert: true },
