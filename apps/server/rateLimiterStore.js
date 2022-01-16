@@ -27,7 +27,7 @@ export function getIncrFunction(fastify){
 		const cond = { Route: this.route, Source: key };
 	
 		const RateLimit = await fastify.db.getRateLimit(key,this.route)
-		console.log(RateLimit.TTL , now ,parseInt(RateLimit.TTL,10)>now,"Incrementing",RateLimit.Count+1)
+		// console.log(RateLimit.TTL , now ,parseInt(RateLimit.TTL,10)>now,"Incrementing",RateLimit.Count+1)
 		if (RateLimit && parseInt(RateLimit.TTL, 10) > now) {
 			try {
 			
