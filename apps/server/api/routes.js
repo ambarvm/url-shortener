@@ -9,7 +9,11 @@ const apiRoutes = async fastify => {
 				type: 'object',
 				required: ['originalUrl'],
 				properties: {
-					originalUrl: { type: 'string' },
+					originalUrl: {
+						type: 'string',
+						format: 'uri',
+						example: 'https://example.com',
+					},
 					expireAt: { type: 'string', format: 'date-time' },
 				},
 			},
