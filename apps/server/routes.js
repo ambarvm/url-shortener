@@ -1,6 +1,5 @@
 import apiRoutes from './api/routes.js';
 import fastifyRateLimit from 'fastify-rate-limit';
-import fastify from 'fastify';
 
 
 

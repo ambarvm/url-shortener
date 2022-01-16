@@ -8,12 +8,21 @@ const apiRoutes = async fastify => {
 		url: '/create',
 		schema: {
 			description: 'Create a new short URL',
+			headers: {
+				type: 'object',
+				required: ['authorization'],
+				properties: {
+					authorization: {
+						description: 'api key',
+						type: 'string',
+					},
+				},
+			},
 			body: {
 				type: 'object',
-				required: ['originalUrl', 'api_key'],
+				required: ['originalUrl'],
 				properties: {
 					originalUrl: { type: 'string' },
-					api_key: { type: 'string' },
 				},
 			},
 			response: {
@@ -27,12 +36,13 @@ const apiRoutes = async fastify => {
 		},
 		config: {
 			rateLimit: {
-			  max: 2,
-			  timeWindow: '1 minute'
-			}
+				max: 10,
+				timeWindow: '1 minute',
+			},
 		},
 		handler: async (request, reply) => {
-			let { originalUrl, api_key } = request.body;
+			let { originalUrl } = request.body;
+			let api_key = request.headers['authorization'];
 
 			if (await fastify.db.verifyApiKey(api_key)) {
 				let shortUrl = await fastify.db.createShortUrl(originalUrl, api_key);

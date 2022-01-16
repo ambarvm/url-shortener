@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import { createHash } from 'crypto';
 dotenv.config();
+
 /**
  * @param {import('fastify').FastifyInstance} fastify
  */
@@ -24,20 +25,18 @@ export const getDb = db => {
 				.digest('hex')
 				.slice(0, 6);
 
-			await db
-				.collection('urls')
-				.updateOne(
-					{ _id: shortCode },
-					{
-						$set: {
-							_id: shortCode,
-							originalUrl,
-							shortCode,
-							createdBy: api_key,
-						},
+			await db.collection('urls').updateOne(
+				{ _id: shortCode },
+				{
+					$set: {
+						_id: shortCode,
+						originalUrl,
+						shortCode,
+						createdBy: api_key,
 					},
-					{ upsert: true },
-				);
+				},
+				{ upsert: true },
+			);
 			return shortCode;
 		},
 
@@ -81,19 +80,25 @@ export const getDb = db => {
 		},
 
 		async updateCount(Route, Source, Count, TTL) {
-			await db
-				.collection('quotas')
-				.updateOne(
-					{ _id: source },
-					{ $set: { _id: source, Source, Route, Count, TTL } },
-					{ upsert: true },
-				);
+			console.log('updating count to', Count);
+			try {
+				await db
+					.collection('quotas')
+					.updateOne(
+						{ _id: Source },
+						{ $set: { _id: Source, Source, Route, Count, TTL } },
+						{ upsert: true },
+					);
+			} catch (err) {
+				console.log(err);
+			}
 			return;
 		},
 
-		async getRateLimit(key){
-			const doc = await db.collection('quotas').findOne({key})
+		async getRateLimit(key, Route) {
+			const doc = await db.collection('quotas').findOne({ _id: key });
+			console.log('key', key, doc);
 			return doc;
-		}
+		},
 	};
 };
