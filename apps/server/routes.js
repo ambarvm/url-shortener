@@ -9,7 +9,7 @@ export const routes = async fastify => {
 		url: '/:shortCode',
 		schema: {
 			response: {
-				301: {
+				303: {
 					description: 'Redirect to the original URL',
 					headers: {
 						Location: { type: 'string' },
@@ -30,7 +30,7 @@ export const routes = async fastify => {
 					reply.callNotFound();
 					return;
 				}
-				reply.redirect(301, originalUrl);
+				reply.redirect(303, originalUrl);
 			} catch (err) {
 				fastify.log.error(err);
 			}

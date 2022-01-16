@@ -5,21 +5,26 @@ import { createHash } from 'crypto';
  */
 export const getDb = db => {
 	return {
-		/** @param {string} originalUrl */
-		async createShortUrl(originalUrl) {
+		/** @param {{originalUrl:string, expireAt?:string}} */
+		async createShortUrl({ originalUrl, expireAt }) {
 			// Shortening using MD5, will improve this in future
 			const shortCode = createHash('md5')
 				.update(originalUrl)
 				.digest('hex')
 				.slice(0, 6);
 
-			await db
-				.collection('urls')
-				.updateOne(
-					{ _id: shortCode },
-					{ $set: { _id: shortCode, originalUrl, shortCode } },
-					{ upsert: true },
-				);
+			await db.collection('urls').updateOne(
+				{ _id: shortCode },
+				{
+					$set: {
+						_id: shortCode,
+						originalUrl,
+						shortCode,
+						expireAt: expireAt ? new Date(expireAt) : null,
+					},
+				},
+				{ upsert: true },
+			);
 			return shortCode;
 		},
 
