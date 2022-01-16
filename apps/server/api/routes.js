@@ -10,6 +10,7 @@ const apiRoutes = async fastify => {
 				required: ['originalUrl'],
 				properties: {
 					originalUrl: { type: 'string' },
+					expireAt: { type: 'string', format: 'date-time' },
 				},
 			},
 			response: {
@@ -22,8 +23,8 @@ const apiRoutes = async fastify => {
 			},
 		},
 		handler: async request => {
-			let { originalUrl } = request.body;
-			let shortUrl = await fastify.db.createShortUrl(originalUrl);
+			let { originalUrl, expireAt } = request.body;
+			let shortUrl = await fastify.db.createShortUrl({ originalUrl, expireAt });
 			return { shortUrl: `${request.hostname}/${shortUrl}` };
 		},
 	});

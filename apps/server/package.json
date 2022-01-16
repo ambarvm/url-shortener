@@ -1,5 +1,5 @@
 {
-	"name": "write-server",
+	"name": "server",
 	"type": "module",
 	"version": "1.0.0",
 	"description": "",
@@ -16,7 +16,8 @@
 		"dotenv": "^12.0.3",
 		"fastify": "^3.25.3",
 		"fastify-mongodb": "^4.1.1",
-		"fastify-swagger": "^4.13.1"
+		"fastify-swagger": "^4.13.1",
+		"mongodb": "^4.3.0"
 	},
 	"devDependencies": {
 		"nodemon": "^2.0.15",

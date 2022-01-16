@@ -3,6 +3,7 @@ import fastifyMongodb from 'fastify-mongodb';
 import fastifySwagger from 'fastify-swagger';
 import dotenv from 'dotenv';
 
+import connect from './mongoClient.js';
 import { getDb } from './db.js';
 import { routes } from './routes.js';
 
@@ -22,7 +23,7 @@ const fastify = Fastify({
 
 fastify.register(fastifyMongodb, {
 	forceClose: true,
-	url: process.env.MONGO_URL,
+	client: await connect(),
 });
 
 fastify.register(fastifySwagger, {
@@ -37,7 +38,7 @@ fastify.register(fastifySwagger, {
 });
 
 fastify.register(async instance => {
-	fastify.decorate('db', getDb(instance.mongo.db));
+	fastify.decorate('db', getDb(instance.mongo.client.db()));
 	fastify.register(routes);
 });
 
