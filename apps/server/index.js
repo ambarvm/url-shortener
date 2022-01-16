@@ -7,6 +7,8 @@ import connect from './mongoClient.js';
 import { addSchemas } from './schema.js';
 import { getDb } from './db.js';
 import { routes } from './routes.js';
+import { getIncrFunction, RateLimiterStore } from './rateLimiterStore.js';
+import fastifyRateLimit from 'fastify-rate-limit';
 
 dotenv.config();
 
@@ -42,6 +44,19 @@ addSchemas(fastify);
 
 fastify.register(async instance => {
 	fastify.decorate('db', getDb(instance.mongo.client.db()));
+	getIncrFunction(fastify);
+
+	fastify.register(fastifyRateLimit, {
+		global: false,
+		max: 1,
+		timeWindow: 1000 * 60 * 60,
+		store: RateLimiterStore,
+		skipOnError: true, // default false
+		keyGenerator: function (req) {
+			return req.headers['authorization'];
+		},
+	});
+
 	fastify.register(routes);
 });
 
@@ -53,7 +68,7 @@ fastify.ready(err => {
 // Run the server!
 const start = async () => {
 	try {
-		await fastify.listen(3000);
+		await fastify.listen(process.env.PORT || 3000, '0.0.0.0');
 	} catch (err) {
 		fastify.log.error(err);
 		process.exit(1);
