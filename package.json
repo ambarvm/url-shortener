@@ -5,7 +5,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "pnpm -r dev",
+		"start": "pnpm -r start",
+		"test": "pnpm run start & docker run --network=host -i loadimpact/k6 run -  < tests/k6/index.js",
 		"format": "prettier . --write"
 	},
 	"keywords": [],
