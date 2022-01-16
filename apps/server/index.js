@@ -4,6 +4,7 @@ import fastifySwagger from 'fastify-swagger';
 import dotenv from 'dotenv';
 
 import connect from './mongoClient.js';
+import { addSchemas } from './schema.js';
 import { getDb } from './db.js';
 import { routes } from './routes.js';
 
@@ -36,6 +37,8 @@ fastify.register(fastifySwagger, {
 		host: 'localhost:3000',
 	},
 });
+
+addSchemas(fastify);
 
 fastify.register(async instance => {
 	fastify.decorate('db', getDb(instance.mongo.client.db()));

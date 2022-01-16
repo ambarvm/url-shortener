@@ -9,11 +9,7 @@ const apiRoutes = async fastify => {
 				type: 'object',
 				required: ['originalUrl'],
 				properties: {
-					originalUrl: {
-						type: 'string',
-						format: 'uri',
-						example: 'https://example.com',
-					},
+					originalUrl: { $ref: 'uri' },
 					expireAt: { type: 'string', format: 'date-time' },
 				},
 			},
@@ -21,7 +17,7 @@ const apiRoutes = async fastify => {
 				200: {
 					type: 'object',
 					properties: {
-						shortUrl: { type: 'string' },
+						shortUrl: { $ref: 'uri' },
 					},
 				},
 			},
