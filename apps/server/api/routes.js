@@ -25,6 +25,12 @@ const apiRoutes = async fastify => {
 				},
 			},
 		},
+		config: {
+			rateLimit: {
+			  max: 2,
+			  timeWindow: '1 minute'
+			}
+		},
 		handler: async (request, reply) => {
 			let { originalUrl, api_key } = request.body;
 

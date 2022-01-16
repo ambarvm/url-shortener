@@ -5,6 +5,9 @@ import dotenv from 'dotenv';
 
 import { getDb } from './db.js';
 import { routes } from './routes.js';
+import RateLimiterStore from './rateLimiterStore.js';
+import fastifyRateLimit from 'fastify-rate-limit';
+// fastifyRateLimits
 
 dotenv.config();
 
@@ -39,6 +42,34 @@ fastify.register(fastifySwagger, {
 fastify.register(async instance => {
 	fastify.decorate('db', getDb(instance.mongo.db));
 	fastify.register(routes);
+});
+
+
+
+fastify.register(fastifyRateLimit, {
+	// global: false, // default true
+	max:1,
+	timeWindow: 1000 * 60 * 60,
+	// allowList: ['127.0.0.1'],
+	// redis: new Redis({ host: '127.0.0.1' }),
+	store: RateLimiterStore,
+	skipOnError: true, // default false
+	keyGenerator: function (req) {
+		console.log("Key",req.body['api_key'])
+		return req.body['api_key'];
+	},
+	// errorResponseBuilder: function(req, context) { /* ... */},
+	// addHeadersOnExceeding: { // default show all the response headers when rate limit is not reached
+	//   'x-ratelimit-limit': true,
+	//   'x-ratelimit-remaining': true,
+	//   'x-ratelimit-reset': true
+	// },
+	// addHeaders: { // default show all the response headers when rate limit is reached
+	//   'x-ratelimit-limit': true,
+	//   'x-ratelimit-remaining': true,
+	//   'x-ratelimit-reset': true,
+	//   'retry-after': true
+	// }
 });
 
 fastify.ready(err => {

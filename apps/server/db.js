@@ -1,37 +1,41 @@
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import {createHash} from 'crypto'
-dotenv.config()
+import { createHash } from 'crypto';
+dotenv.config();
 /**
  * @param {import('fastify').FastifyInstance} fastify
  */
 export const getDb = db => {
 	return {
 		async verifyApiKey(api_key) {
-			try{
-			const doc = await db.collection('api_keys').findOne({ api_key });
-			if (doc === null) return false;
-			else return true;
-			}
-			catch(err){
+			try {
+				const doc = await db.collection('api_keys').findOne({ api_key });
+				if (doc === null) return false;
+				else return true;
+			} catch (err) {
 				return err;
 			}
 		},
 
-
 		async createShortUrl(originalUrl, api_key) {
-			
-			console.log(originalUrl+api_key+process.env.SECRET_KEY)
+			console.log(originalUrl + api_key + process.env.SECRET_KEY);
 			const shortCode = createHash('md5')
-			.update(originalUrl+api_key+process.env.SECRET_KEY)
-			.digest('hex')
-			.slice(0, 6);
+				.update(originalUrl + api_key + process.env.SECRET_KEY)
+				.digest('hex')
+				.slice(0, 6);
 
 			await db
 				.collection('urls')
 				.updateOne(
 					{ _id: shortCode },
-					{ $set: { _id: shortCode, originalUrl, shortCode , createdBy : api_key } },
+					{
+						$set: {
+							_id: shortCode,
+							originalUrl,
+							shortCode,
+							createdBy: api_key,
+						},
+					},
 					{ upsert: true },
 				);
 			return shortCode;
@@ -75,5 +79,21 @@ export const getDb = db => {
 				return err;
 			}
 		},
+
+		async updateCount(Route, Source, Count, TTL) {
+			await db
+				.collection('quotas')
+				.updateOne(
+					{ _id: source },
+					{ $set: { _id: source, Source, Route, Count, TTL } },
+					{ upsert: true },
+				);
+			return;
+		},
+
+		async getRateLimit(key){
+			const doc = await db.collection('quotas').findOne({key})
+			return doc;
+		}
 	};
 };
