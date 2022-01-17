@@ -19,7 +19,7 @@ export const getDb = db => {
 		},
 
 		/** @param {{originalUrl:string, expireAt?:string}} */
-		async createShortUrl(originalUrl, api_key,expireAt) {
+		async createShortUrl(originalUrl, api_key, expireAt) {
 			console.log(originalUrl + api_key + process.env.SECRET_KEY);
 			const shortCode = createHash('md5')
 				.update(originalUrl + api_key + process.env.SECRET_KEY)
@@ -45,13 +45,13 @@ export const getDb = db => {
 		/** @param {string} shortCode */
 		async getOriginalUrl(shortCode) {
 			/** @type {null|{originalUrl:string}} */
-			const doc = await db.collection('urls').findOne({ _id:shortCode });
+			const doc = await db.collection('urls').findOne({ _id: shortCode });
 			return doc?.originalUrl;
 		},
 
 		/** @param {string} email */
 		async getRegisteredUser(email) {
-			const doc = await db.collection('users').findOne({ _id:email });
+			const doc = await db.collection('users').findOne({ _id: email });
 			console.log('user', doc);
 			if (doc != null) {
 				return doc;
@@ -87,8 +87,8 @@ export const getDb = db => {
 				await db
 					.collection('quotas')
 					.updateOne(
-						{ _id: Source+"_"+Route },
-						{ $set: { _id: Source+"_"+Route, Source, Route, Count, TTL } },
+						{ _id: Source + '_' + Route },
+						{ $set: { _id: Source + '_' + Route, Source, Route, Count, TTL } },
 						{ upsert: true },
 					);
 			} catch (err) {
@@ -98,7 +98,9 @@ export const getDb = db => {
 		},
 
 		async getRateLimit(key, Route) {
-			const doc = await db.collection('quotas').findOne({ _id: key+"_"+Route });
+			const doc = await db
+				.collection('quotas')
+				.findOne({ _id: key + '_' + Route });
 			console.log('key', key, doc);
 			return doc;
 		},

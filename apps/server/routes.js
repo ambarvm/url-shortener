@@ -1,13 +1,8 @@
 import apiRoutes from './api/routes.js';
-import fastifyRateLimit from 'fastify-rate-limit';
-
-
 
 /** @type {import('fastify').FastifyPluginCallback} */
 export const routes = async fastify => {
 	fastify.register(apiRoutes, { prefix: '/api' });
-
-	
 
 	fastify.route({
 		method: 'GET',
