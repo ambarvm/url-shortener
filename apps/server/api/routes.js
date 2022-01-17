@@ -66,6 +66,16 @@ const apiRoutes = async fastify => {
 		url: '/delete',
 		schema: {
 			description: 'Delete a short URL',
+			headers: {
+				type: 'object',
+				required: ['authorization'],
+				properties: {
+					authorization: {
+						description: 'api key',
+						type: 'string',
+					},
+				},
+			},
 			body: {
 				type: 'object',
 				required: ['shortCode'],
