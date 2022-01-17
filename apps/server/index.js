@@ -38,7 +38,7 @@ fastify.register(fastifySwagger, {
 		info: {
 			title: 'URL Shortener',
 		},
-		host: 'localhost:3000',
+		host: process.env.HOST_URL,
 	},
 });
 
