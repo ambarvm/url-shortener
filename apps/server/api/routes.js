@@ -65,6 +65,42 @@ const apiRoutes = async fastify => {
 
 	fastify.route({
 		method: 'POST',
+		url: '/delete',
+		schema: {
+			description: 'Delete a short URL',
+			body: {
+				type: 'object',
+				required: ['shortCode'],
+				properties: {
+					shortCode: { type: 'string' },
+				},
+			},
+			response: {
+				200: {
+					type: 'object',
+					properties: {
+						deleted: { type: 'boolean' },
+					},
+				},
+			},
+		},
+		config: {
+			rateLimit: {
+				max: 10,
+				timeWindow: '1 minute',
+			},
+		},
+		handler: async (request, reply) => {
+			let { shortCode } = request.body;
+			let api_key = request.headers['authorization'];
+
+			const deleted = await fastify.db.deleteUrl(shortCode, api_key);
+			return { deleted };
+		},
+	});
+
+	fastify.route({
+		method: 'POST',
 		url: '/register',
 		schema: {
 			body: {

@@ -1,10 +1,9 @@
-import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import { createHash } from 'crypto';
 dotenv.config();
 
 /**
- * @param {import('fastify').FastifyInstance} fastify
+ * @param {import('mongodb').Db} db
  */
 export const getDb = db => {
 	return {
@@ -46,7 +45,13 @@ export const getDb = db => {
 			);
 			return shortCode;
 		},
-
+		/** @param {string} shortCode */
+		async deleteUrl(shortCode, apiKey) {
+			const res = await db
+				.collection('urls')
+				.deleteOne({ _id: shortCode, createdBy: apiKey });
+			return res.deletedCount === 1;
+		},
 		/** @param {string} shortCode */
 		async getOriginalUrl(shortCode) {
 			/** @type {null|{originalUrl:string}} */
@@ -67,17 +72,18 @@ export const getDb = db => {
 
 		async createUser(email, password, api_key) {
 			try {
-				const res = await db.collection('users').insert({
-					_id: email,
-					email,
-					password,
-					api_key,
-				});
-
-				await db.collection('api_keys').insert({
-					_id: api_key,
-					api_key: api_key,
-				});
+				const [res] = await Promise.all([
+					db.collection('users').insertOne({
+						_id: email,
+						email,
+						password,
+						api_key,
+					}),
+					db.collection('api_keys').insertOne({
+						_id: api_key,
+						api_key,
+					}),
+				]);
 
 				console.log('ss', res);
 				return res;
