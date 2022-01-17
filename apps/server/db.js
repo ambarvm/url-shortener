@@ -40,7 +40,13 @@ export const getDb = db => {
 			);
 			return shortCode;
 		},
-
+		/** @param {string} shortCode */
+		async deleteUrl(shortCode, apiKey) {
+			const res = await db
+				.collection('urls')
+				.deleteOne({ _id: shortCode, createdBy: apiKey });
+			return res.deletedCount === 1;
+		},
 		/** @param {string} shortCode */
 		async getOriginalUrl(shortCode) {
 			/** @type {null|{originalUrl:string}} */
