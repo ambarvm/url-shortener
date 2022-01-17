@@ -4,6 +4,10 @@ import apiRoutes from './api/routes.js';
 export const routes = async fastify => {
 	fastify.register(apiRoutes, { prefix: '/api' });
 
+	fastify.get('/', async (request, reply) => {
+		return reply.view('index');
+	});
+
 	fastify.route({
 		method: 'GET',
 		url: '/:shortCode',

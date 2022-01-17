@@ -19,7 +19,9 @@
 		"fastify-mongodb": "^4.1.1",
 		"fastify-rate-limit": "^5.7.0",
 		"fastify-swagger": "^4.13.1",
-		"mongodb": "^4.3.0"
+		"handlebars": "^4.7.7",
+		"mongodb": "^4.3.0",
+		"point-of-view": "^5.0.0"
 	},
 	"devDependencies": {
 		"nodemon": "^2.0.15",

@@ -24,7 +24,7 @@ const apiRoutes = async fastify => {
 				properties: {
 					originalUrl: { $ref: 'uri' },
 					expireAt: { type: 'string', format: 'date-time' },
-					custom_url:{type:'string'}
+					custom_url: { type: 'string' },
 				},
 			},
 			response: {
@@ -43,17 +43,15 @@ const apiRoutes = async fastify => {
 			},
 		},
 		handler: async (request, reply) => {
-			let { originalUrl, expireAt ,custom_url} = request.body;
+			let { originalUrl, expireAt, custom_url } = request.body;
 			let api_key = request.headers['authorization'];
-		
 
 			if (await fastify.db.verifyApiKey(api_key)) {
-				
 				let shortUrl = await fastify.db.createShortUrl(
 					originalUrl,
 					api_key,
 					expireAt,
-					custom_url
+					custom_url,
 				);
 				return { shortUrl: `${request.hostname}/${shortUrl}` };
 			} else {

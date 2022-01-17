@@ -1,6 +1,8 @@
 import Fastify from 'fastify';
 import fastifyMongodb from 'fastify-mongodb';
 import fastifySwagger from 'fastify-swagger';
+import pointOfView from 'point-of-view';
+import Handlebars from 'handlebars';
 import dotenv from 'dotenv';
 
 import connect from './mongoClient.js';
@@ -58,6 +60,13 @@ fastify.register(async instance => {
 	});
 
 	fastify.register(routes);
+});
+
+fastify.register(pointOfView, {
+	engine: {
+		handlebars: Handlebars,
+	},
+	root: './views',
 });
 
 fastify.ready(err => {
