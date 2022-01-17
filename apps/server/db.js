@@ -19,12 +19,17 @@ export const getDb = db => {
 		},
 
 		/** @param {{originalUrl:string, expireAt?:string}} */
-		async createShortUrl(originalUrl, api_key, expireAt) {
+		async createShortUrl(originalUrl, api_key, expireAt, custom_url) {
 			console.log(originalUrl + api_key + process.env.SECRET_KEY);
-			const shortCode = createHash('md5')
-				.update(originalUrl + api_key + process.env.SECRET_KEY)
-				.digest('hex')
-				.slice(0, 6);
+			let shortCode;
+			if (custom_url != null) {
+				shortCode = custom_url;
+			} else {
+				shortCode = createHash('md5')
+					.update(originalUrl + api_key + process.env.SECRET_KEY)
+					.digest('hex')
+					.slice(0, 6);
+			}
 
 			await db.collection('urls').updateOne(
 				{ _id: shortCode },
