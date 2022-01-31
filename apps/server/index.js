@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import fastifyMongodb from 'fastify-mongodb';
 import fastifySwagger from 'fastify-swagger';
 import pointOfView from 'point-of-view';
+import fastifyFormbody from 'fastify-formbody';
 import Handlebars from 'handlebars';
 import dotenv from 'dotenv';
 
@@ -30,6 +31,7 @@ fastify.register(fastifyMongodb, {
 	forceClose: true,
 	client: await connect(),
 });
+fastify.register(fastifyFormbody);
 
 fastify.register(fastifySwagger, {
 	routePrefix: '/docs',
@@ -67,6 +69,16 @@ fastify.register(pointOfView, {
 		handlebars: Handlebars,
 	},
 	root: './views',
+	layout: 'layouts/main.hbs',
+});
+
+fastify.setErrorHandler(async (error, request, reply) => {
+	return reply.view('error', { error });
+});
+fastify.setNotFoundHandler(async (request, reply) => {
+	const error = new Error('Page Not Found');
+	error.statusCode = 404;
+	return reply.view('error', { error });
 });
 
 fastify.ready(err => {

@@ -7,6 +7,9 @@ export const routes = async fastify => {
 	fastify.get('/', async (request, reply) => {
 		return reply.view('index');
 	});
+	fastify.get('/register', async (request, reply) => {
+		return reply.view('register');
+	});
 
 	fastify.route({
 		method: 'GET',
