@@ -5,8 +5,51 @@ export const routes = async fastify => {
 	fastify.register(apiRoutes, { prefix: '/api' });
 
 	fastify.get('/', async (request, reply) => {
-		return reply.view('index', { isLoggedIn: !!request.cookies['api_key'] });
+		return reply.view('index', {
+			isLoggedIn: !!request.cookies['api_key'],
+			originalUrl: '',
+		});
 	});
+	fastify.post('/', async (request, reply) => {
+		try {
+			if (!request.cookies['api_key']) {
+				return reply.redirect('/login');
+			}
+			const { originalUrl } = request.body;
+			const res = await fastify.inject({
+				method: 'POST',
+				url: {
+					protocol: request.protocol,
+					pathname: '/api/create',
+					hostname: request.hostname,
+					port: new URL(`${request.protocol}://${request.hostname}`).port || 80,
+				},
+				payload: { originalUrl },
+				headers: {
+					authorization: fastify.unsignCookie(request.cookies.api_key).value,
+				},
+			});
+			if (res.statusCode >= 400) {
+				const error = new Error(res.body);
+				error.statusCode = res.statusCode;
+				throw new Error(res.body);
+			}
+			const { shortUrl } = JSON.parse(res.body);
+			return reply.view('index', {
+				originalUrl,
+				shortUrl,
+				isLoggedIn: !!request.cookies['api_key'],
+			});
+		} catch (error) {
+			if (error) {
+				return reply.view('index', {
+					error,
+					isLoggedIn: !!request.cookies['api_key'],
+				});
+			}
+		}
+	});
+
 	fastify.get('/register', async (request, reply) => {
 		if (request.cookies['api_key']) {
 			return reply.redirect('/');

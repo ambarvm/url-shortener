@@ -53,7 +53,9 @@ const apiRoutes = async fastify => {
 					expireAt,
 					custom_url,
 				);
-				return { shortUrl: `${request.hostname}/${shortUrl}` };
+				return {
+					shortUrl: `${request.protocol}://${request.hostname}/${shortUrl}`,
+				};
 			} else {
 				reply.status(401);
 				return 'Invalid Api key';

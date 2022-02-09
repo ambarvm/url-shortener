@@ -1,7 +1,19 @@
-{{! <form action='' method='post'>
-	<label>
-		URL
-		<input type='url' required />
-	</label>
-	<button type='submit'>Shorten</button>
-</form> }}
+{{#if isLoggedIn}}
+	<form method='post'>
+		<label>
+			URL
+			<input type='url' name='originalUrl' value='{{originalUrl}}' required />
+		</label>
+		<button type='submit'>Shorten</button>
+	</form>
+	{{#if shortUrl}}
+		Shortened URL:
+		<a href='{{shortUrl}}' target='_blank'>{{shortUrl}}</a>
+	{{/if}}
+{{else}}
+	Login to shorten URL
+{{/if}}
+
+{{#if error}}
+	<strong style='color: red;'>{{error}}</strong>
+{{/if}}
