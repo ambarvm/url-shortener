@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import { create_UUID } from '../utils.js';
 
 /** @type {import('fastify').FastifyPluginCallback} */
 
@@ -164,6 +165,57 @@ const apiRoutes = async fastify => {
 
 	fastify.route({
 		method: 'POST',
+		url: '/createBioLink',
+		schema: {
+			body: {
+				type: 'object',
+				required: ['name'],
+				properties: {
+					name: { type: 'string' },
+					instagram: { type: 'string' },
+					twitter: { type: 'string' },
+					linkedin: { type: 'string' },
+					github: { type: 'string' },
+				},
+			},
+			response: {
+				200: {
+					description: 'Bio link',
+					type: 'object',
+					properties:{
+						shortUrl : {type:'string'}
+					}
+				},
+			},
+		},
+		handler: async (req, reply) => {
+			try {
+				let { name, instagram, twitter, linkedin, github } =
+					req.body;
+				let api_key = req.headers['authorization'];
+
+				if (await fastify.db.verifyApiKey(api_key)) {
+					let shortUrl = await fastify.db.createBioUrl(
+						api_key,
+						req.body
+					);
+					if(shortUrl === -1){
+						reply.status(500);
+						return
+					}
+					return { shortUrl: `${req.hostname}/bio/${shortUrl}` };
+				} else {
+					reply.status(401);
+					return 'Invalid Api key';
+				}
+			} catch (err) {
+				return err;
+			}
+		},
+	});
+
+	fastify.route({
+		method: 'POST',
 		url: '/getapikey',
 		schema: {
 			body: {
@@ -211,17 +263,5 @@ const apiRoutes = async fastify => {
 	});
 };
 
-const create_UUID = () => {
-	var dt = new Date().getTime();
-	var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-		/[xy]/g,
-		function (c) {
-			var r = (dt + Math.random() * 16) % 16 | 0;
-			dt = Math.floor(dt / 16);
-			return (c == 'x' ? r : (r & 0x3) | 0x8).toString(16);
-		},
-	);
-	return uuid;
-};
 
 export default apiRoutes;

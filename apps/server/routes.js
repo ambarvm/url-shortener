@@ -75,6 +75,44 @@ export const routes = async fastify => {
 	fastify.get('/logout', async (request, reply) => {
 		return reply.clearCookie('api_key').redirect('/');
 	});
+	fastify.route({
+		method: 'GET',
+		url: '/bio/:shortCode',
+		schema: {
+			response: {
+				200: {
+					description: 'Object containing user links and information',
+					type: 'object',
+					properties: {
+						name: { type: 'string' },
+						instagram: { type: 'string' },
+						twitter: { type: 'string' },
+						linkedin: { type: 'string' },
+						github: { type: 'string' },
+					},
+				},
+				404: {
+					description: 'Short URL not found',
+					type: 'null',
+				},
+			},
+		},
+		handler: async (request, reply) => {
+			try {
+				const { shortCode } = request.params;
+				const originalUrl = await fastify.db.getBioUrl(shortCode);
+				console.log(originalUrl);
+				if (!originalUrl) {
+					reply.callNotFound();
+					return;
+				}
+				return originalUrl;
+			} catch (err) {
+				fastify.log.error(err);
+				return;
+			}
+		},
+	});
 
 	fastify.route({
 		method: 'GET',

@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { createHash } from 'crypto';
+import { create_UUID } from './utils.js';
 dotenv.config();
 
 /**
@@ -27,7 +28,7 @@ export const getDb = db => {
 				shortCode = createHash('md5')
 					.update(originalUrl + api_key + process.env.SECRET_KEY)
 					.digest('base64')
-					.slice(0, 6);
+					.slice(0, 6).replace('/','+');;
 			}
 
 			await db.collection('urls').updateOne(
@@ -45,6 +46,35 @@ export const getDb = db => {
 			);
 			return shortCode;
 		},
+
+		async createBioUrl(api_key, info) {
+			let { name, profileUrl, instagram, twitter, linkedin, github } = info;
+			// console.log(originalUrl + api_key + process.env.SECRET_KEY);
+			let shortCode;
+			shortCode =
+				createHash('md5')
+					.update(api_key + process.env.SECRET_KEY+create_UUID())
+					.digest('base64')
+					.slice(0, 6).replace('/','+');
+			let setObj = info;
+			setObj['_id'] = shortCode;
+			setObj['createdBy'] = api_key;
+
+			try{
+			await db.collection('bioUrls').updateOne(
+				{ _id: shortCode },
+				{
+					$set: setObj,
+				},
+				{ upsert: true },
+			);
+			return shortCode;
+			}
+			catch(err){
+				console.log(err)
+				return -1;
+			}
+		},
 		/** @param {string} shortCode */
 		async deleteUrl(shortCode, apiKey) {
 			const res = await db
@@ -57,6 +87,12 @@ export const getDb = db => {
 			/** @type {null|{originalUrl:string}} */
 			const doc = await db.collection('urls').findOne({ _id: shortCode });
 			return doc?.originalUrl;
+		},
+
+		/** @param {string} shortCode */
+		async getBioUrl(shortCode){
+			const doc = await db.collection('bioUrls').findOne({ _id: shortCode });
+			return doc
 		},
 
 		/** @param {string} email */
