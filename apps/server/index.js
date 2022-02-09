@@ -3,6 +3,7 @@ import fastifyMongodb from 'fastify-mongodb';
 import fastifySwagger from 'fastify-swagger';
 import pointOfView from 'point-of-view';
 import fastifyFormbody from 'fastify-formbody';
+import fastifyCookie from 'fastify-cookie';
 import Handlebars from 'handlebars';
 import dotenv from 'dotenv';
 
@@ -32,6 +33,10 @@ fastify.register(fastifyMongodb, {
 	client: await connect(),
 });
 fastify.register(fastifyFormbody);
+fastify.register(fastifyCookie, {
+	secret: process.env.COOKIE_SECRET,
+	prefix: '__Host-',
+});
 
 fastify.register(fastifySwagger, {
 	routePrefix: '/docs',

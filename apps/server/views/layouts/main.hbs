@@ -18,8 +18,13 @@
 
         <nav>
             <ul>
-                <li><a href='/docs'>API Documentation</a></li>
-                <li><a href='/register'>Register</a></li>
+                <li><a href='/docs' target="_blank">API Documentation</a></li>
+                {{#if isLoggedIn}}
+                    <li><a href='/logout'>Logout</a></li>
+                {{else}}
+                    <li><a href='/login'>Login</a></li>
+                    <li><a href='/register'>Register</a></li>
+                {{/if}}
             </ul>
         </nav>
     </header>

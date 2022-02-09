@@ -13,6 +13,7 @@ importers:
       bcrypt: ^5.0.1
       dotenv: ^12.0.3
       fastify: ^3.25.3
+      fastify-cookie: ^5.5.0
       fastify-formbody: ^5.2.0
       fastify-mongodb: ^4.1.1
       fastify-rate-limit: ^5.7.0
@@ -26,6 +27,7 @@ importers:
       bcrypt: 5.0.1
       dotenv: 12.0.3
       fastify: 3.25.3
+      fastify-cookie: 5.5.0
       fastify-formbody: 5.2.0
       fastify-mongodb: 4.1.1
       fastify-rate-limit: 5.7.0
@@ -397,6 +399,11 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
+  /cookie-signature/1.1.0:
+    resolution: {integrity: sha512-Alvs19Vgq07eunykd3Xy2jF0/qSNv2u7KDbAek9H5liV1UMijbqFs5cycZvv5dVsvseT/U4H8/7/w8Koh35C4A==}
+    engines: {node: '>=6.6.0'}
+    dev: false
+
   /cookie/0.4.1:
     resolution: {integrity: sha512-ZwrFkGJxUR3EIoXtO+yVE69Eb7KlixbaeAWfBQB9vVsNn/o+Yw69gBWSSDK825hQNdN+wF8zELf3dFNl/kxkUA==}
     engines: {node: '>= 0.6'}
@@ -576,6 +583,13 @@ packages:
 
   /fast-safe-stringify/2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
+
+  /fastify-cookie/5.5.0:
+    resolution: {integrity: sha512-XhexnjmAR4CUh3Cz6Ko0is+pa8k1bS6+nkf/i3viv4p7R1fwGtGhAXuz+b4nEM0x7pvdi5ApKY73Bp5CELZP7g==}
+    dependencies:
+      cookie-signature: 1.1.0
+      fastify-plugin: 3.0.0
+    dev: false
 
   /fastify-error/0.3.1:
     resolution: {integrity: sha512-oCfpcsDndgnDVgiI7bwFKAun2dO+4h84vBlkWsWnz/OUK9Reff5UFoFl241xTiLeHWX/vU9zkDVXqYUxjOwHcQ==}
