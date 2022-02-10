@@ -20,15 +20,9 @@ export const routes = async fastify => {
 			}
 			const { originalUrl, custom_url, expire, expiryDate, expiryTime } =
 				request.body;
-			const expiryJsDate = new Date('2022-02-01T00:00Z');
 			const res = await fastify.inject({
 				method: 'POST',
-				url: {
-					protocol: request.protocol,
-					pathname: '/api/create',
-					hostname: request.hostname,
-					port: new URL(`${request.protocol}://${request.hostname}`).port || 80,
-				},
+				url: '/api/create',
 				payload: {
 					originalUrl,
 					...(custom_url && { custom_url }),
@@ -46,9 +40,11 @@ export const routes = async fastify => {
 				throw new Error(JSON.parse(res.body).message);
 			}
 			const { shortUrl } = JSON.parse(res.body);
+			const urlObj = new URL(shortUrl);
+			urlObj.host = request.hostname;
 			return reply.view('index', {
 				originalUrl,
-				shortUrl,
+				shortUrl: urlObj.toString(),
 				isLoggedIn: !!request.cookies['api_key'],
 			});
 		} catch (error) {
@@ -240,7 +236,9 @@ export const routes = async fastify => {
 				throw new Error(res.body);
 			}
 			const { shortUrl } = JSON.parse(res.body);
-			return reply.redirect(303, shortUrl);
+			const urlObj = new URL(shortUrl);
+			urlObj.host = request.hostname;
+			return reply.redirect(303, urlObj.toString());
 		} catch (error) {
 			if (error) {
 				return reply.view('new-bio', { error });
