@@ -154,13 +154,21 @@ export const routes = async fastify => {
 		handler: async (request, reply) => {
 			try {
 				const { shortCode } = request.params;
-				const originalUrl = await fastify.db.getBioUrl(shortCode);
-				console.log(originalUrl);
-				if (!originalUrl) {
+				const bio = await fastify.db.getBioUrl(shortCode);
+				console.log(bio);
+				if (!bio) {
 					reply.callNotFound();
 					return;
 				}
-				return originalUrl;
+				return reply.view('bio', {
+					name: bio.name,
+					links: [
+						{ name: 'Instagram', url: bio.instagram },
+						{ name: 'Twitter', url: bio.twitter },
+						{ name: 'LinkedIn', url: bio.linkedin },
+						{ name: 'GitHub', url: bio.github },
+					],
+				});
 			} catch (err) {
 				fastify.log.error(err);
 				return;
@@ -216,8 +224,16 @@ export const routes = async fastify => {
 			}
 			const res = await fastify.inject({
 				method: 'POST',
-				url: '/api/createBioLink',
+				url: {
+					protocol: request.protocol,
+					pathname: '/api/createBioLink',
+					hostname: request.hostname,
+					port: new URL(`${request.protocol}://${request.hostname}`).port || 80,
+				},
 				payload: request.body,
+				headers: {
+					authorization: fastify.unsignCookie(request.cookies.api_key).value,
+				},
 			});
 			if (res.statusCode >= 400) {
 				const error = new Error(res.body);
