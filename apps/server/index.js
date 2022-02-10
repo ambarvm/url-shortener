@@ -42,10 +42,7 @@ fastify.register(fastifyStatic, {
 	prefix: '/static/',
 	maxAge: '1d',
 });
-fastify.register(fastifyCookie, {
-	secret: process.env.COOKIE_SECRET,
-	prefix: '__Host-',
-});
+fastify.register(fastifyCookie, { secret: process.env.COOKIE_SECRET });
 
 fastify.register(fastifySwagger, {
 	routePrefix: '/docs',

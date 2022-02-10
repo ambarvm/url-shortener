@@ -114,7 +114,6 @@ export const routes = async fastify => {
 			reply.setCookie('api_key', res.body, {
 				httpOnly: true,
 				sameSite: 'strict',
-				secure: true,
 				signed: true,
 				maxAge: 1000 * 60 * 60 * 24 * 7,
 			});
