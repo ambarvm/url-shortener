@@ -168,6 +168,13 @@ const apiRoutes = async fastify => {
 	fastify.route({
 		method: 'POST',
 		url: '/createBioLink',
+		config: {
+			rateLimit: {
+				max: 5,
+				timeWindow: '1 month',
+				message : 'You have reached your limit of 5 bio links per month',
+			},
+		},
 		schema: {
 			body: {
 				type: 'object',
