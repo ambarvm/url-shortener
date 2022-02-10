@@ -5,9 +5,12 @@ export const routes = async fastify => {
 	fastify.register(apiRoutes, { prefix: '/api' });
 
 	fastify.get('/', async (request, reply) => {
+		const [expiryDate, time] = new Date().toISOString().split('T');
 		return reply.view('index', {
 			isLoggedIn: !!request.cookies['api_key'],
 			originalUrl: '',
+			expiryDate,
+			expiryTime: time.slice(0, 5),
 		});
 	});
 	fastify.post('/', async (request, reply) => {
@@ -15,7 +18,9 @@ export const routes = async fastify => {
 			if (!request.cookies['api_key']) {
 				return reply.redirect('/login');
 			}
-			const { originalUrl } = request.body;
+			const { originalUrl, custom_url, expire, expiryDate, expiryTime } =
+				request.body;
+			const expiryJsDate = new Date('2022-02-01T00:00Z');
 			const res = await fastify.inject({
 				method: 'POST',
 				url: {
@@ -24,7 +29,13 @@ export const routes = async fastify => {
 					hostname: request.hostname,
 					port: new URL(`${request.protocol}://${request.hostname}`).port || 80,
 				},
-				payload: { originalUrl },
+				payload: {
+					originalUrl,
+					...(custom_url && { custom_url }),
+					...(expire && {
+						expireAt: `${expiryDate}T${expiryTime}:00Z`,
+					}),
+				},
 				headers: {
 					authorization: fastify.unsignCookie(request.cookies.api_key).value,
 				},
@@ -32,7 +43,7 @@ export const routes = async fastify => {
 			if (res.statusCode >= 400) {
 				const error = new Error(res.body);
 				error.statusCode = res.statusCode;
-				throw new Error(res.body);
+				throw new Error(JSON.parse(res.body).message);
 			}
 			const { shortUrl } = JSON.parse(res.body);
 			return reply.view('index', {

@@ -25,7 +25,7 @@ const apiRoutes = async fastify => {
 				properties: {
 					originalUrl: { $ref: 'uri' },
 					expireAt: { type: 'string', format: 'date-time' },
-					custom_url: { type: 'string' },
+					custom_url: { type: 'string', pattern: '^[a-zA-Z0-9_-]+$' },
 				},
 			},
 			response: {
@@ -172,7 +172,7 @@ const apiRoutes = async fastify => {
 			rateLimit: {
 				max: 5,
 				timeWindow: '1 month',
-				message : 'You have reached your limit of 5 bio links per month',
+				message: 'You have reached your limit of 5 bio links per month',
 			},
 		},
 		schema: {
@@ -191,26 +191,22 @@ const apiRoutes = async fastify => {
 				200: {
 					description: 'Bio link',
 					type: 'object',
-					properties:{
-						shortUrl : {type:'string'}
-					}
+					properties: {
+						shortUrl: { type: 'string' },
+					},
 				},
 			},
 		},
 		handler: async (req, reply) => {
 			try {
-				let { name, instagram, twitter, linkedin, github } =
-					req.body;
+				let { name, instagram, twitter, linkedin, github } = req.body;
 				let api_key = req.headers['authorization'];
 
 				if (await fastify.db.verifyApiKey(api_key)) {
-					let shortUrl = await fastify.db.createBioUrl(
-						api_key,
-						req.body
-					);
-					if(shortUrl === -1){
+					let shortUrl = await fastify.db.createBioUrl(api_key, req.body);
+					if (shortUrl === -1) {
 						reply.status(500);
-						return
+						return;
 					}
 					return { shortUrl: `${req.hostname}/bio/${shortUrl}` };
 				} else {
@@ -271,6 +267,5 @@ const apiRoutes = async fastify => {
 		},
 	});
 };
-
 
 export default apiRoutes;

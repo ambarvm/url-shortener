@@ -86,9 +86,6 @@ fastify.register(pointOfView, {
 	layout: 'layouts/main.hbs',
 });
 
-fastify.setErrorHandler(async (error, request, reply) => {
-	return reply.view('error', { error });
-});
 fastify.setNotFoundHandler(async (request, reply) => {
 	const error = new Error('Page Not Found');
 	error.statusCode = 404;

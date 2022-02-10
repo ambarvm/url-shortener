@@ -1,19 +1,48 @@
+<style>
+	.show-after-checked { display: none; } input:checked + .show-after-checked {
+	display: block; }
+</style>
+
 {{#if isLoggedIn}}
 	<form method='post'>
 		<label>
 			URL
 			<input type='url' name='originalUrl' value='{{originalUrl}}' required />
 		</label>
+		<label>
+			<input type='checkbox' name='expire' />
+			Expire
+
+			<div class='show-after-checked'>
+				<label>
+					Expiry date
+					<input type='date' name='expiryDate' value='{{expiryDate}}' />
+					<small>In UTC time</small>
+				</label>
+				<label>
+					Expiry time
+					<input type='time' name='expiryTime' value='{{expiryTime}}' />
+					<small>In UTC time</small>
+				</label>
+			</div>
+		</label>
+		<label>
+			Custom Link
+			<input type='text' name='custom_url' pattern='^[a-zA-Z0-9_-]+$' />
+			<small>Can contain alphabets, numbers, underscore(_) and hyphen(-)</small>
+		</label>
 		<button type='submit'>Shorten</button>
 	</form>
 	{{#if shortUrl}}
-		Shortened URL:
-		<a href='{{shortUrl}}' target='_blank'>{{shortUrl}}</a>
+		<center>
+			Shortened URL:
+			<a href='{{shortUrl}}' target='_blank'>{{shortUrl}}</a>
+		</center>
 	{{/if}}
 {{else}}
 	Login to shorten URL
 {{/if}}
 
 {{#if error}}
-	<strong style='color: red;'>{{error}}</strong>
+	<strong style='color: red;'>{{error.message}}</strong>
 {{/if}}
