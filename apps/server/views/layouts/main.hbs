@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URL Shortener</title>
+    <link rel="stylesheet" href="/static/pico.min.css">
 
     <style>
         html {
@@ -12,23 +13,26 @@
         }
     </style>
 </head>
-<body>
+<body class="container">
     <header>
-        <h1><a href="/">URL Shortener</a></h1>
-
-        <nav>
-            <ul>
-                <li><a href='/docs' target="_blank">API Documentation</a></li>
-                {{#if isLoggedIn}}
-                    <li><a href='/logout'>Logout</a></li>
-                {{else}}
-                    <li><a href='/login'>Login</a></li>
-                    <li><a href='/register'>Register</a></li>
-                {{/if}}
-            </ul>
-        </nav>
+		<nav>
+			<ul>
+				<li><strong><a href="/">URL Shortener</a></strong></li>
+			</ul>
+			<ul>
+				<li><a href='/docs' target="_blank">API Docs</a></li>
+				{{#if isLoggedIn}}
+					<li><a href='/logout'>Logout</a></li>
+				{{else}}
+					<li><a href='/login'>Login</a></li>
+					<li><a href='/register'>Register</a></li>
+				{{/if}}
+			</ul>
+		</nav>
     </header>
 
-    {{{body}}}
+    <main>
+        {{{body}}}
+    </main>
 </body>
 </html>

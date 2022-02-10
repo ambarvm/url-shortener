@@ -4,16 +4,20 @@ import fastifySwagger from 'fastify-swagger';
 import pointOfView from 'point-of-view';
 import fastifyFormbody from 'fastify-formbody';
 import fastifyCookie from 'fastify-cookie';
+import fastifyRateLimit from 'fastify-rate-limit';
+import fastifyStatic from 'fastify-static';
 import Handlebars from 'handlebars';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import connect from './mongoClient.js';
 import { addSchemas } from './schema.js';
 import { getDb } from './db.js';
 import { routes } from './routes.js';
 import { getIncrFunction, RateLimiterStore } from './rateLimiterStore.js';
-import fastifyRateLimit from 'fastify-rate-limit';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config();
 
 const fastify = Fastify({
@@ -33,6 +37,11 @@ fastify.register(fastifyMongodb, {
 	client: await connect(),
 });
 fastify.register(fastifyFormbody);
+fastify.register(fastifyStatic, {
+	root: path.join(__dirname, 'static'),
+	prefix: '/static/',
+	maxAge: '1d',
+});
 fastify.register(fastifyCookie, {
 	secret: process.env.COOKIE_SECRET,
 	prefix: '__Host-',
