@@ -171,7 +171,7 @@ const apiRoutes = async fastify => {
 		config: {
 			rateLimit: {
 				max: 5,
-				timeWindow: '1 month',
+				timeWindow: '4 weeks',
 				message: 'You have reached your limit of 5 bio links per month',
 			},
 		},
