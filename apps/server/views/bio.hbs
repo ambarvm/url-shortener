@@ -2,15 +2,17 @@
 
 	<h2>{{name}}</h2>
 
-	<ul>
+	<ul class='icons'>
 		{{#each links}}
 			{{#if url}}
+
 				<li>
-					<a
-						href='{{url}}'
-						target='_blank'
-						rel='noopener noreferer'
-					>{{name}}</a>
+
+					<a href='{{url}}' target='_blank' rel='noopener noreferer'><img
+							src='/static/{{name}}.svg'
+							class='logo'
+							style='width:30px'
+						/></a>
 				</li>
 			{{/if}}
 		{{/each}}

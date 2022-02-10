@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,6 +11,36 @@
         html {
             font-family: sans-serif;
         }
+
+	li{
+		all: initial;
+		display: inline;
+	}
+		.icons li .fab:hover{
+    color: #fff;
+}
+
+.icons li a{
+   
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color:white;
+    text-align: center;
+    transition: .6s;
+    box-shadow: 0 5px 4px rgba(0,0,0,.5);
+	padding-top: 15px;
+	margin-right:10px ;
+}
+
+.icons li a:hover{
+    transform: translate(0, -10%);
+}
+
+.icons li a:hover{
+    background-color: #0077b5;
+}
     </style>
 </head>
 <body class="container">
@@ -21,7 +51,7 @@
 		<ul>
 			<li><a href='/docs' target="_blank">API Docs</a></li>
 			{{#if isLoggedIn}}
-				<li><a href='/new/bio'>New Bio</a></li>
+				<li><a href='/new/bio'>New Bio-Link</a></li>
 				<li><a href='/logout'>Logout</a></li>
 			{{else}}
 				<li><a href='/login'>Login</a></li>
