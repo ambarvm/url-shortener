@@ -208,7 +208,9 @@ const apiRoutes = async fastify => {
 						reply.status(500);
 						return;
 					}
-					return { shortUrl: `${req.hostname}/bio/${shortUrl}` };
+					return {
+						shortUrl: `${req.protocol}://${req.hostname}/bio/${shortUrl}`,
+					};
 				} else {
 					reply.status(401);
 					return 'Invalid Api key';

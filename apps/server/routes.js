@@ -200,4 +200,36 @@ export const routes = async fastify => {
 			}
 		},
 	});
+
+	// create bio page
+	fastify.get('/new/bio', async (request, reply) => {
+		if (!request.cookies['api_key']) {
+			return reply.redirect('/login');
+		}
+		return reply.view('new-bio', { isLoggedIn: true });
+	});
+
+	fastify.post('/new/bio', async (request, reply) => {
+		try {
+			if (!request.cookies['api_key']) {
+				return reply.redirect('/login');
+			}
+			const res = await fastify.inject({
+				method: 'POST',
+				url: '/api/createBioLink',
+				payload: request.body,
+			});
+			if (res.statusCode >= 400) {
+				const error = new Error(res.body);
+				error.statusCode = res.statusCode;
+				throw new Error(res.body);
+			}
+			const { shortUrl } = JSON.parse(res.body);
+			return reply.redirect(303, shortUrl);
+		} catch (error) {
+			if (error) {
+				return reply.view('new-bio', { error });
+			}
+		}
+	});
 };
