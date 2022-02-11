@@ -51,7 +51,6 @@ fastify.register(fastifySwagger, {
 		info: {
 			title: 'URL Shortener',
 		},
-		host: process.env.HOST_URL,
 	},
 });
 
