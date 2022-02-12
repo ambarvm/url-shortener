@@ -5,7 +5,7 @@ A highly scalable URL shortener built for CS559 (System Design) Course project a
 ## Links
 
 - [Design Doc](https://probable-manta-37a.notion.site/URL-Shortener-204bf8f4a567422abd27accadcf9510e)
-- [API Documentation](https://gas-url-shortener.herokuapp.com/docs/)
+- [API Documentation](http://url-shortener-1-959160947.us-east-1.elb.amazonaws.com/docs/)
 
 ## Features
 
